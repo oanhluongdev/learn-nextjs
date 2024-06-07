@@ -1,0 +1,36 @@
+services:
+  postgresql:
+    image: postgres
+    container_name: saas_postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/data/postgres
+    networks:
+      - saas-net
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: saas_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - 5050:80
+    networks:
+      - saas-net
+    restart: unless-stopped
+
+volumes:
+  postgres:
+  pgadmin:
+networks:
+  saas-net:
+    driver: bridge
